@@ -57,7 +57,8 @@ A cloud-based smart learning platform designed to provide interactive and modern
 <img width="958" height="527" alt="image" src="https://github.com/user-attachments/assets/82fa58da-a3f5-4908-b040-b2262323f414" />
 
 ## Course Page
-<img width="958" height="527" alt="image" src="https://github.com/user-attachments/assets/0117bf0a-7d49-42f4-8002-4054a33681bd" />
+<img width="1010" height="524" alt="image" src="https://github.com/user-attachments/assets/eb9a6ed5-8587-4452-929d-db75cc5f7691" />
+
 
 
 ## AI Chatbot
@@ -77,7 +78,3 @@ A cloud-based smart learning platform designed to provide interactive and modern
 
 ---
 
-
-│
-├── package.json
-└── REA
