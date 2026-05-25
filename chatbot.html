@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SmartLearn AI Assistant</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background: linear-gradient(135deg,#0F172A,#020617);
+  color: #F8FAFC;
+}
+
+/* Top Bar */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 25px;
+  background: #020617;
+  border-bottom: 1px solid #1E293B;
+}
+
+.header h2 {
+  font-size: 18px;
+}
+
+.back-btn {
+  background: #38BDF8;
+  color: #020617;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* Container */
+.container {
+  display: flex;
+  height: calc(100vh - 60px);
+}
+
+/* Sidebar */
+.sidebar {
+  width: 250px;
+  background: #020617;
+  border-right: 1px solid #1E293B;
+  padding: 20px;
+}
+
+.sidebar h3 {
+  margin-bottom: 15px;
+}
+
+.sidebar p {
+  font-size: 13px;
+  color: #94A3B8;
+  margin-bottom: 10px;
+}
+
+/* Chat Area */
+.chat-area {
+  flex: 1;
+  padding: 20px;
+}
+
+/* Chat Card */
+.chat-card {
+  height: 100%;
+  background: #1E293B;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+
+/* Iframe */
+.chat-card iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Header -->
+<div class="header">
+  <button class="back-btn" onclick="goBack()">← Dashboard</button>
+  <h2>🤖 SmartLearn AI Assistant</h2>
+</div>
+
+<!-- Layout -->
+<div class="container">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h3>💡 Tips</h3>
+    <p>• Ask about courses</p>
+    <p>• Try: "What is Python?"</p>
+    <p>• Try: "Explain AI"</p>
+    <p>• Try: "What is DBMS?"</p>
+  </div>
+
+  <!-- Chat -->
+  <div class="chat-area">
+    <div class="chat-card">
+
+      <!-- 🔥 BOTSONIC -->
+      <iframe src="https://bot.writesonic.com/share/bot/39ca7399-eb94-4a93-b8bd-cb12620a5ca7"></iframe>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+function goBack(){
+  window.location.href = "dashboard.html";
+}
+</script>
+
+</body>
+</html>

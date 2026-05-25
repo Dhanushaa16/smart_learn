@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Learning Platform</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <h1><span>SMARTLEARN</span></h1>
+    <div class="nav-links">
+  
+      <button id="loginBtn">Login</button>
+
+      <button id="registerBtn">Register</button>
+
+
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero reveal">
+    <h2>Cloud-Based Smart Learning Platform</h2>
+    <p>
+      Learn anytime, anywhere with chatbot, quizzes, 
+      and organized study materials.
+    </p>
+  
+  </section>
+
+  <!-- Features -->
+  <section class="features reveal">
+    <div class="card">
+      <h3>📘 PDF Study Materials</h3>
+      <p>Topic-wise organized notes for easy reading and download.</p>
+    </div>
+
+    <div class="card">
+      <h3>📝 Interactive Quizzes</h3>
+      <p>MCQ-based quizzes with instant feedback and results.</p>
+    </div>
+
+    <div class="card">
+      <h3>🤖Chatbot</h3>
+      <p>Ask doubts, get explanations, and personalized guidance.</p>
+    </div>
+  </section>
+
+  <!-- Courses -->
+  <section class="courses reveal">
+    <h2 class="section-title">Our Popular Courses</h2>
+
+    <div class="course-grid">
+      <div class="course-card" >
+        <h3>Web Development</h3>
+        <p>HTML, CSS, JavaScript</p>
+      </div>
+
+      <div class="course-card" >
+        <h3>Python Programming</h3>
+        <p>Beginner to Advanced</p>
+      </div>
+
+      <div class="course-card" >
+        <h3>Data Science</h3>
+        <p>Analysis & Visualization</p>
+      </div>
+
+      <div class="course-card" >
+        <h3>Machine Learning</h3>
+        <p>Models & Algorithms</p>
+      </div>
+
+      <div class="course-card">
+        <h3>Artificial Intelligence</h3>
+        <p>Smart Systems</p>
+      </div>
+
+      <div class="course-card" >
+        <h3>Cloud Computing</h3>
+        <p>AWS & Azure</p>
+      </div>
+
+      <div class="course-card" >
+        <h3>Cyber Security</h3>
+        <p>Ethical Hacking</p>
+      </div>
+
+      <div class="course-card" >
+        <h3>DBMS</h3>
+        <p>SQL & Databases</p>
+      </div>
+
+      <div class="course-card">
+        <h3>Java Programming</h3>
+        <p>OOP & Projects</p>
+      </div>
+
+      <div class="course-card"  >
+        <h3>Digital Marketing</h3>
+        <p>SEO & Ads</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta reveal">
+    <h2>Start Learning Smarter Today 🚀</h2>
+
+  <!-- AI Chatbot -->
+  <div class="chatbot">
+    <div class="chat-header">🤖 SmartLearn AI
+      <span class="chat-close">✖</span>
+    </div>
+    <div class="chat-body">
+      <p class="bot">Hi 👋 I’m your AI tutor. Ask me anything!</p>
+    </div>
+    <div class="chat-input">
+      <input type="text" placeholder="Ask your doubt..." />
+      <button>➤</button>
+    </div>
+  </div>
+
+  <div class="chatbot-btn" onclick="openChatbot()">💬</div>
+
+
+  <!-- JavaScript -->
+  <script>
+    function openCourse(course) {
+      window.location.href = "course.html?course=" + course;
+    }
+
+    const reveals = document.querySelectorAll(".reveal");
+
+    function revealOnScroll() {
+      reveals.forEach(el => {
+        const windowHeight = window.innerHeight;
+        const elementTop = el.getBoundingClientRect().top;
+
+        if (elementTop < windowHeight - 100) {
+          el.classList.add("active");
+        }
+      });
+    }
+
+    window.addEventListener("scroll", revealOnScroll);
+    window.addEventListener("load", revealOnScroll);
+  </script>
+<script>
+  const chatbotBtn = document.querySelector(".chatbot-btn");
+  const chatbot = document.querySelector(".chatbot");
+  const chatClose = document.querySelector(".chat-close");
+
+  chatbotBtn.addEventListener("click", () => {
+    chatbot.style.display =
+      chatbot.style.display === "flex" ? "none" : "flex";
+  });
+
+  chatClose.addEventListener("click", () => {
+    chatbot.style.display = "none";
+  });
+</script>
+<script>
+  function openChatbot() {
+   window.open("chatbot.html?course=web", "_blank");
+ 
+  }
+</script>
+<script>
+  document.getElementById("registerBtn").addEventListener("click", () => {
+    window.location.href = "register.html";
+  });
+</script>
+<script>
+  document.getElementById("loginBtn").addEventListener("click", () => {
+    window.location.href = "login.html";
+  });
+</script>
+
+
+</body>
+</html>

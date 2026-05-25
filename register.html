@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Register | SmartLearnAI</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background-color: #0F172A;
+  color: #F8FAFC;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.auth-container {
+  width: 100%;
+  max-width: 420px;
+  padding: 20px;
+}
+
+.auth-card {
+  background: #1E293B;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  text-align: center;
+}
+
+.auth-card h2 { margin-bottom: 8px; }
+.auth-card p { margin-bottom: 22px; color: #94A3B8; }
+
+.auth-card input {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  border-radius: 10px;
+  border: 1px solid #334155;
+  background: #0F172A;
+  color: #F8FAFC;
+}
+
+/* Password wrapper */
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper input {
+  padding-right: 40px;
+}
+
+.toggle-eye {
+  position: absolute;
+  right: 12px;
+  top: 38%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.primary-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  background: linear-gradient(90deg, #38BDF8, #F472B6);
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="auth-container">
+  <div class="auth-card">
+    <h2>Create Account 🚀</h2>
+    <p>Start your smart learning journey</p>
+
+<input type="text" id="name" placeholder="Full Name" required>
+
+<input type="email" id="email" placeholder="Email Address" required>
+
+<div class="password-wrapper">
+  <input type="password" id="password" placeholder="Password" required>
+  <span class="toggle-eye" onclick="togglePassword('password', this)">👁️</span>
+</div>
+
+<div class="password-wrapper">
+  <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+  <span class="toggle-eye" onclick="togglePassword('confirmPassword', this)">👁️</span>
+</div>
+
+<button class="primary-btn" onclick="registerUser()">Register</button>
+
+<p class="auth-link">
+  already have an account? <a href="login.html">Login</a>
+</p>
+  </div>
+</div>
+
+<script src="https://unpkg.com/amazon-cognito-identity-js@6.3.7/dist/amazon-cognito-identity.min.js"></script>
+
+<script>
+// ✅ Cognito Config
+const poolData = {
+  UserPoolId: "us-east-1_caVHADuKx",
+  ClientId: "7mtd1e005smlcf7qq91t8ibanm"
+};
+const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+
+// ✅ BLOCK NUMBERS IN NAME (REAL FIX)
+const nameInput = document.getElementById("name");
+
+// Block typing numbers
+nameInput.addEventListener("keypress", function(e) {
+  const char = String.fromCharCode(e.which);
+  if (!/[a-zA-Z\s]/.test(char)) {
+    e.preventDefault();
+  }
+});
+
+// Block paste invalid content
+nameInput.addEventListener("paste", function(e) {
+  const paste = (e.clipboardData || window.clipboardData).getData('text');
+  if (/[^a-zA-Z\s]/.test(paste)) {
+    e.preventDefault();
+  }
+});
+
+// ✅ TOGGLE PASSWORD (FIXED)
+function togglePassword(id, icon) {
+  const input = document.getElementById(id);
+
+  if (input.type === "password") {
+    input.type = "text";
+    icon.textContent = "🙈";
+  } else {
+    input.type = "password";
+    icon.textContent = "👁️";
+  }
+}
+
+// ✅ REGISTER FUNCTION
+function registerUser(){
+
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const confirmPassword = document.getElementById("confirmPassword").value;
+
+  if(!name){
+    alert("Enter your name");
+    return;
+  }
+
+  if(password !== confirmPassword){
+    alert("Passwords do not match");
+    return;
+  }
+
+  const username = email.split("@")[0] + Date.now();
+
+  const attributeList = [];
+
+  attributeList.push(
+    new AmazonCognitoIdentity.CognitoUserAttribute({
+      Name: "email",
+      Value: email
+    })
+  );
+
+  attributeList.push(
+    new AmazonCognitoIdentity.CognitoUserAttribute({
+      Name: "name",
+      Value: name
+    })
+  );
+
+  userPool.signUp(username, password, attributeList, null, function(err, result){
+
+    if(err){
+      alert(err.message);
+      return;
+    }
+
+    localStorage.setItem("tempUser", email);
+
+    alert("Registration successful! Verify Email");
+    window.location.href = "enroll.html";
+  });
+}
+</script>
+
+</body>
+</html>

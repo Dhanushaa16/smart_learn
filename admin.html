@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Upload Lesson</title>
+<script src="https://sdk.amazonaws.com/js/aws-sdk-2.1480.0.min.js"></script>
+</head>
+
+<body>
+
+<h2>Upload Lesson PDF</h2>
+
+<input type="text" id="courseId" placeholder="Course ID (python)">
+<br><br>
+
+<input type="text" id="lessonId" placeholder="Lesson ID (L1)">
+<br><br>
+
+<input type="text" id="title" placeholder="Lesson Title">
+<br><br>
+
+<input type="file" id="pdfFile" accept=".pdf">
+<br><br>
+
+<button onclick="uploadLesson()">Upload Lesson</button>
+
+<script>
+
+AWS.config.update({
+ accessKeyId: "YOUR_ACCESS_KEY",
+secretAccessKey: "YOUR_SECRET_KEY"
+});
+
+
+const s3 = new AWS.S3();
+const dynamo = new AWS.DynamoDB.DocumentClient();
+async function uploadLesson(){
+
+try{
+
+const file = document.getElementById("pdfFile").files[0];
+
+if(!file){
+alert("Select a PDF first");
+return;
+}
+
+const courseId = document.getElementById("courseId").value;
+const lessonId = document.getElementById("lessonId").value;
+const title = document.getElementById("title").value;
+
+const key = `lessons/${courseId}-${lessonId}.pdf`;
+
+const uploadParams = {
+Bucket:"smartlearnai",
+Key:key,
+Body:file,
+ContentType:"application/pdf"
+};
+
+const result = await s3.upload(uploadParams).promise();
+
+const pdfUrl = `https://smartlearnai.s3.us-east-1.amazonaws.com/${key}`;
+
+await dynamo.put({
+TableName:"Lessons",
+Item:{
+courseId:courseId,
+lessonId:lessonId,
+title:title,
+pdfUrl:pdfUrl
+}
+}).promise();
+
+alert("Upload successful ✅");
+
+}catch(err){
+console.error(err);
+alert("Upload failed ❌");
+}
+
+}
+
+</script>
+
+</body>
+</html>

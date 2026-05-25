@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Quiz</title>
+
+<style>
+body{
+  background:#0F172A;
+  color:#F8FAFC;
+  font-family:"Segoe UI", sans-serif;
+  padding:30px;
+}
+
+a{
+  color:#38BDF8;
+  text-decoration:none;
+  display:inline-block;
+  margin-bottom:20px;
+}
+
+.question{
+  background:#1E293B;
+  padding:15px;
+  margin-bottom:15px;
+  border-radius:10px;
+}
+
+button{
+  background:linear-gradient(90deg,#38BDF8,#F472B6);
+  border:none;
+  padding:10px 15px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:600;
+  margin-top:15px;
+}
+
+#resultBox{
+  margin-top:20px;
+  padding:15px;
+  background:#1E293B;
+  border-radius:10px;
+  display:none;
+}
+</style>
+</head>
+
+<body>
+
+<a href="dashboard.html">← Back to Dashboard</a>
+
+<h1>Course Quiz</h1>
+
+<div id="quizContainer"></div>
+
+<div id="resultBox"></div>
+
+<script>
+
+// Read course from URL
+// Get enrolled courses
+const enrolledCourses = JSON.parse(localStorage.getItem("enrolledCourses")) || [];
+
+const container = document.getElementById("quizContainer");
+
+function escapeHTML(str){
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+// Quiz Data
+const quizzes = {
+
+web: [
+  {q:"Which HTML element is semantic?", options:["<div>","<section>","<span>","<b>"], answer:1},
+  {q:"Flexbox is used for?", options:["Storage","Layout","Security","SEO"], answer:1},
+  {q:"Async JS uses?", options:["Promises","Loops","Variables","Arrays"], answer:0},
+  {q:"DOM stands for?", options:["Doc Obj Model","Document Object Model","Data Model","None"], answer:1},
+  {q:"Responsive design uses?", options:["Media Queries","SQL","Java","Python"], answer:0}
+],
+
+python: [
+  {q:"Immutable type?", options:["List","Dict","Tuple","Set"], answer:2},
+  {q:"Lambda is?", options:["Loop","Function","Var","Class"], answer:1},
+  {q:"Iteration uses?", options:["for","if","try","def"], answer:0},
+  {q:"Data analysis lib?", options:["NumPy","HTML","CSS","JS"], answer:0},
+  {q:"PEP8 is?", options:["Style Guide","DB","Framework","Compiler"], answer:0}
+],
+
+dm: [
+  {q:"Goal of SEO?", options:["Visibility","Emails","Design","Coding"], answer:0},
+  {q:"PPC platform?", options:["Google Ads","Excel","Paint","Word"], answer:0},
+  {q:"CTR means?", options:["Click Through Rate","Time Ratio","Text Rank","None"], answer:0},
+  {q:"Traffic tool?", options:["Google Analytics","Paint","VS Code","Excel"], answer:0},
+  {q:"Engagement improves with?", options:["Content Marketing","Spam","Ignore","Delete"], answer:0}
+],
+datascience: [
+  {q:"Which library is used for data manipulation?", options:["Pandas","HTML","CSS","Java"], answer:0},
+  {q:"NumPy is mainly used for?", options:["Numerical computing","UI design","Networking","Security"], answer:0},
+  {q:"Which chart shows distribution?", options:["Histogram","Bar chart","Pie chart","Table"], answer:0},
+  {q:"Data cleaning involves?", options:["Removing errors","Adding bugs","Deleting code","None"], answer:0},
+  {q:"Which tool for visualization?", options:["Matplotlib","Word","Excel","Paint"], answer:0}
+],
+
+ml: [
+  {q:"Supervised learning uses?", options:["Labeled data","Unlabeled data","Random data","No data"], answer:0},
+  {q:"Which is classification algorithm?", options:["Logistic Regression","K-Means","Apriori","None"], answer:0},
+  {q:"Overfitting means?", options:["Model too complex","Too simple","No training","Fast model"], answer:0},
+  {q:"Which is unsupervised?", options:["K-Means","Linear Regression","Logistic","Decision Tree"], answer:0},
+  {q:"Model evaluation uses?", options:["Accuracy","Speed","Color","Design"], answer:0}
+],
+
+ai: [
+  {q:"AI stands for?", options:["Artificial Intelligence","Auto Internet","Advanced Input","None"], answer:0},
+  {q:"Search algorithm example?", options:["A*","HTML","CSS","SQL"], answer:0},
+  {q:"Knowledge representation is?", options:["Storing information","Deleting data","Formatting","None"], answer:0},
+  {q:"Expert systems mimic?", options:["Human experts","Machines","Servers","Networks"], answer:0},
+  {q:"AI application?", options:["Chatbot","Keyboard","Mouse","Cable"], answer:0}
+],
+
+cloud: [
+  {q:"Cloud computing provides?", options:["On-demand services","Hardware only","Offline storage","None"], answer:0},
+  {q:"IaaS stands for?", options:["Infrastructure as a Service","Internet Service","Internal Storage","None"], answer:0},
+  {q:"Virtualization means?", options:["Running multiple systems","Deleting OS","Formatting","None"], answer:0},
+  {q:"Which is cloud provider?", options:["AWS","MS Paint","Notepad","Chrome"], answer:0},
+  {q:"Cloud security protects?", options:["Data","Keyboard","Mouse","Screen"], answer:0}
+],
+
+cyber: [
+  {q:"Cyber security protects?", options:["Systems & data","Screens","Mouse","Keyboard"], answer:0},
+  {q:"Phishing is?", options:["Fake attack","Coding","Design","None"], answer:0},
+  {q:"Encryption means?", options:["Securing data","Deleting data","Copying","None"], answer:0},
+  {q:"Firewall is?", options:["Security system","Game","App","None"], answer:0},
+  {q:"Ethical hacking is?", options:["Legal hacking","Illegal","Gaming","None"], answer:0}
+],
+
+dbms: [
+  {q:"DBMS stands for?", options:["Database Management System","Data Backup System","Design Base","None"], answer:0},
+  {q:"Primary key is?", options:["Unique identifier","Duplicate key","Null value","None"], answer:0},
+  {q:"SQL is used for?", options:["Query database","Design UI","Networking","None"], answer:0},
+  {q:"Normalization reduces?", options:["Redundancy","Speed","Security","None"], answer:0},
+  {q:"ER diagram shows?", options:["Entity relationships","Code","Design","None"], answer:0}
+],
+
+java: [
+  {q:"Java is?", options:["Object-oriented language","Database","OS","Browser"], answer:0},
+  {q:"OOP concept?", options:["Encapsulation","HTML","CSS","SQL"], answer:0},
+  {q:"Exception handling uses?", options:["try-catch","if-else","loop","switch"], answer:0},
+  {q:"Collection framework is?", options:["Data structure API","UI tool","DB","None"], answer:0},
+  {q:"JVM stands for?", options:["Java Virtual Machine","Java Visual Model","Job VM","None"], answer:0}
+]
+
+};
+
+// 🚀 Load quizzes for all enrolled courses
+
+// 🚀 LOAD ALL QUIZZES
+loadAllQuizzes();
+
+function loadAllQuizzes(){
+
+if(enrolledCourses.length === 0){
+  container.innerHTML = "<p>No enrolled courses</p>";
+  return;
+}
+
+let results = JSON.parse(localStorage.getItem("quizResults")) || {};
+
+let html = "";
+
+enrolledCourses.forEach(course => {
+
+const courseId = course.id;
+const courseName = course.name;
+const quiz = quizzes[courseId];
+
+if(!quiz) return;
+
+// ✅ SHOW COMPLETED BADGE
+if(results[courseId]?.completed){
+  html += `
+  <div style="background:#1E293B;padding:20px;border-radius:10px;margin-bottom:20px;">
+    <h2>${courseName}</h2>
+    <h3 style="color:#22C55E;">✔ Quiz Completed</h3>
+    <p>Score: ${results[courseId].score}/5</p>
+  </div>
+  `;
+  return;
+}
+
+html += `<h2>${courseName}</h2>`;
+
+quiz.forEach((q,index)=>{
+
+html += `<div class="question">
+<p><b>${index+1}. ${q.q}</b></p>`;
+
+q.options.forEach((opt,i)=>{
+
+html += `
+<label style="display:block; margin:10px 0;">
+<input type="radio" name="${courseId}-q${index}" value="${i}">
+  <span style="margin-left:8px;">${escapeHTML(opt)}</span>
+</label>
+`;
+
+});
+
+html += `</div>`;
+
+});
+
+// submit button
+html += `<button onclick="submitQuiz('${courseId}')">Submit ${courseName} Quiz</button><hr>`;
+
+});
+
+document.getElementById("quizContainer").innerHTML = html;
+
+}
+loadAllQuizzes();
+
+// 🚀 SUBMIT QUIZ
+
+function submitQuiz(courseId){
+
+const quiz = quizzes[courseId];
+let score = 0;
+let userAnswers = [];
+let allAnswered = true; // 🔥 NEW
+
+quiz.forEach((q,index)=>{
+
+const selected = document.querySelector(`input[name="${courseId}-q${index}"]:checked`);
+
+if(selected){
+  userAnswers.push(parseInt(selected.value));
+
+  if(parseInt(selected.value) === q.answer){
+    score++;
+  }
+}else{
+  allAnswered = false; // ❌ NOT ANSWERED
+}
+
+});
+
+// 🔥 VALIDATION CHECK
+if(!allAnswered){
+  alert("⚠️ Please answer all questions before submitting!");
+  return; // 🚫 STOP SUBMIT
+}
+
+// SAVE RESULT
+let results = JSON.parse(localStorage.getItem("quizResults")) || {};
+
+results[courseId] = {
+  score: score,
+  completed: true,
+  answers: userAnswers
+};
+
+localStorage.setItem("quizResults", JSON.stringify(results));
+
+alert(`${courseId.toUpperCase()} Score: ${score}/5`);
+
+// Reload page
+location.reload();
+
+}
+function saveQuizResult(courseId, score, answers){
+
+  let results = JSON.parse(localStorage.getItem("quizResults")) || {};
+
+  results[courseId] = {
+    score: score,
+    answers: answers
+  };
+
+  localStorage.setItem("quizResults", JSON.stringify(results));
+
+  console.log("Quiz saved locally ✅");
+}
+
+</script>
+
+
+</script>
+
+</body>
+</html>
